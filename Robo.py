@@ -50,5 +50,7 @@ class Robot:
 
 
 
+robo = Robot()
+robo.forward()
 
 
