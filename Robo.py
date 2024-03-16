@@ -1,56 +1,68 @@
-import gpiod
+from gpiozero import PWMLED
+from gpiozero import LED
 import time
 
-
 class Robot:
-    def __init__(self, lm_pin1=17, lm_pin2=27, rm_pin1=22, rm_pin2=23):
-        self.chip = gpiod.Chip('gpiochip4')
-       
-        self.lm1 = self.chip.get_line(lm_pin1)
-        self.lm2  = self.chip.get_line(lm_pin2)
-        self.rm1 = self.chip.get_line(rm_pin1)
-        self.rm2  = self.chip.get_line(rm_pin2)
-        self.lm1.request(consumer="motor", type=gpiod.LINE_REQ_DIR_OUT)
-        self.lm2.request(consumer="motor", type=gpiod.LINE_REQ_DIR_OUT)
-        self.rm1.request(consumer="motor", type=gpiod.LINE_REQ_DIR_OUT)
-        self.rm2.request(consumer="motor", type=gpiod.LINE_REQ_DIR_OUT)
+    def __init__(self, lm_pin1=6, lm_pin2=12, rm_pin1=13, rm_pin2=16, motor1_speed_pin =20, motor2_speed_pin = 21):
+
+        self.lm_pin1 = LED(lm_pin1)
+        self.lm_pin2 = LED(lm_pin2)
+        self.rm_pin1 = LED(rm_pin1)
+        self.rm_pin2 = LED(rm_pin2)
+        self.motor1_speed_pin = PWMLED(motor1_speed_pin)
+        self.motor2_speed_pin = PWMLED(motor2_speed_pin)
         self.stop()
         
-    def forward(self):
-        self.lm1.set_value(0)
-        self.lm2.set_value(1)
-        self.rm1.set_value(0)
-        self.rm2.set_value(1)
-
+    def forward(self, speed):
+        
+        self.motor1_speed_pin.value = speed
+        self.motor2_speed_pin.value = speed
+        self.lm_pin1.off()
+        self.lm_pin2.on()
+        self.rm_pin1.off()
+        self.rm_pin2.on()
+       
     def stop(self):
-        self.lm1.set_value(0)
-        self.lm2.set_value(0)
-        self.rm1.set_value(0)
-        self.rm2.set_value(0)
 
-    def backward(self):
-        self.lm1.set_value(1)
-        self.lm2.set_value(0)
-        self.rm1.set_value(1)
-        self.rm2.set_value(0)
+        self.lm_pin1.off()
+        self.lm_pin2.off()
+        self.rm_pin1.off()
+        self.rm_pin2.off()
+       
+   
 
-
-    def left(self):
-        self.lm1.set_value(1)
-        self.lm2.set_value(0)
-        self.rm1.set_value(0)
-        self.rm2.set_value(1)
-
-    def right(self):
-            self.lm1.set_value(0)
-            self.lm2.set_value(1)
-            self.rm1.set_value(1)
-            self.rm2.set_value(0)
+    def backward(self, speed):
+        
+    
+        self.motor1_speed_pin.value = speed
+        self.motor2_speed_pin.value = speed
 
 
+        self.lm_pin1.on()
+        self.lm_pin2.off()
+        self.rm_pin1.on()
+        self.rm_pin2.off()
+     
+      
+    def left(self, speed):
+        self.motor1_speed_pin.value = speed
+        self.motor2_speed_pin.value = speed
+ 
+        self.lm_pin1.off()
+        self.lm_pin2.off()
+        self.rm_pin1.off()
+        self.rm_pin2.on()
 
+       
+    def right(self, speed):
+        self.motor1_speed_pin.value = speed
+        self.motor2_speed_pin.value = speed
 
-robo = Robot()
-robo.forward()
+        self.lm_pin1.off()
+        self.lm_pin2.on()
+        self.rm_pin1.off()
+        self.rm_pin2.off()
 
-
+       
+#robo = Robot()
+#robo.stop()                                                                                                                                                                                                                          
