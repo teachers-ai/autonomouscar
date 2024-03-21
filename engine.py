@@ -7,11 +7,13 @@ import cv2
 class Engine:
 
 
-    def __init__(self, model_weight):
-
-        self.model = self.getModel(model_weight)
+    def __init__(self):
+        self.model = self.getModel()
 
     def getModel(self, model_weight):
+        # change this function , inorder to use your model
+        model_weight = "./models/hanuman1.h5"
+        
         model = Sequential()
         model.add(Conv2D(input_shape=(50, 200, 3),filters=32,kernel_size=(3,3),padding="same", activation="relu"))
         model.add(Conv2D(filters=16,kernel_size=(3,3),padding="same", activation="relu"))
