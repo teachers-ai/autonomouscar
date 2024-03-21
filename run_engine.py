@@ -12,7 +12,7 @@ def writetodisk(data):
         cv2.imwrite(filename, img)
 
 
-engine = Engine(model_weight='./models/hanuman1.h5')
+engine = Engine()
 robo = Robot()
 picam2 = Picamera2()
 data = []
