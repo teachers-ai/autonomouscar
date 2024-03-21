@@ -10,7 +10,7 @@ class Engine:
     def __init__(self):
         self.model = self.getModel()
 
-    def getModel(self, model_weight):
+    def getModel(self):
         # change this function , inorder to use your model
         model_weight = "./models/hanuman1.h5"
         
