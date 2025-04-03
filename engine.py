@@ -3,43 +3,60 @@ from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPool2D , Flatten
 import numpy as np
 import cv2
+import tensorflow as tf
+import torch 
+import torchvision.transforms as transforms
+from PIL import Image
 
 class Engine:
 
 
-    def __init__(self):
-        self.model = self.getModel()
-
-    def getModel(self):
-        # change this function , inorder to use your model
-        model_weight = "./models/hanuman1.h5"
+    def __init__(self, path='tf_model.h5'):
         
-        model = Sequential()
-        model.add(Conv2D(input_shape=(50, 200, 3),filters=32,kernel_size=(3,3),padding="same", activation="relu"))
-        model.add(Conv2D(filters=16,kernel_size=(3,3),padding="same", activation="relu"))
-        model.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
-        model.add(Flatten())
-        model.add(Dense(units=250,activation="relu"))
-        model.add(Dense(units=100,activation="relu"))
-        model.add(Dense(units=3, activation="softmax"))
-        model.load_weights(model_weight)
+        self.modeltype = "tf"
+        if "tf_" in path:
+            self.model = self.gettfModel(path)
+        else:
+            self.model =torch.jit.load(f'./models/{path}')
+            self.modeltype ="pt"
 
+    def gettfModel(self, path):
+        # change this function , inorder to use your model
+
+        model_weight = f"./models/{path}"
+        model = tf.keras.models.load_model(model_weight)
+      
         return model
 
     def predict(self, img):
 
-       img = cv2.resize(img, (200, 50))/255
-       img =np.expand_dims(img, axis=0)
+       if self.modeltype == "tf":
 
-       index=  np.argmax(self.model.predict(img)[0], axis=0)
+        img = cv2.resize(img, (200, 50))/255
+        img =np.expand_dims(img, axis=0)
 
-       if index == 0 :
+        index=  np.argmax(self.model.predict(img)[0], axis=0)
+
+        if index == 0 :
            return "L"
-       elif index == 1:
+        elif index == 1:
            return "F"
-       elif index==2:
+        elif index==2:
            return "R"
 
+       else:
+
+          transform = transforms.Compose([transforms.ToTensor(),   transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)) ])
+          self.model.eval()
+          image = Image.fromarray(img).resize((200, 50))
+          image =transform(image).unsqueeze(0)
+          _, predicted = torch.max(self.model(image), 1)
+          if predicted.item() == 0:
+               return  "L"
+          elif predicted.item() == 1:
+               return "F"
+          elif predicted.item() == 2:
+                return "R"
 
 
 
