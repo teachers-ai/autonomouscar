@@ -5,22 +5,30 @@ import cv2
 import time
 import numpy as np
 import threading
+import sys
+
 
 def writetodisk(data):
     for img , direction, index in data:
         filename = f"./predictlogs/{index}_img_{direction}.jpg"
         cv2.imwrite(filename, img)
 
+print(sys.argv)
 
-engine = Engine()
+modelpath = "hanuman1.h5"
+
+if len(sys.argv) >1:
+    modelpath = sys.argv[-1]
+
+engine = Engine(modelpath)
 robo = Robot()
 picam2 = Picamera2()
 data = []
 config = picam2.create_still_configuration()
 picam2.configure(config)
 picam2.start()
-turn_speed =0.5
-move_speed = 0.4
+turn_speed =0.6
+move_speed = 0.6
 index =1
 
 try:
@@ -58,5 +66,4 @@ finally:
     picam2.stop()
     robo.stop()
     writetodisk(data)
-
 
