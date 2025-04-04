@@ -14,3 +14,9 @@ Pytorch
 https://colab.research.google.com/drive/13A1ZLf0kTiX_eyov6ek-9KM0ytgz0Zxv
 
 
+How to run the Car:
+
+Source venv/bin/activate
+python run_engine.py tf_model.h5
+
+
