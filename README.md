@@ -3,7 +3,7 @@
 sudo apt-get install vim
 
 
-# Pyhton pakaages
+# Pyhton pakages
 
 pip install tensorflow
 pip install opencv-python
